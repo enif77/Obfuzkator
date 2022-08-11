@@ -53,20 +53,6 @@ var words = new[]
     "+:year", "/:your", "=:good",
 };
 
-var encodeMap = new Dictionary<char, string>();
-var decodeMap = new Dictionary<string, char>();
-
-foreach (var word in words)
-{
-    var split = word.Split(":");
-
-    var c = split[0][0];
-    var w = split[1];
-    
-    encodeMap.Add(c, w);
-    decodeMap.Add(w, c);
-}
-
 // ---
 
 try
@@ -126,6 +112,7 @@ string Obfuscate(byte[] bytes)
 {
     if (bytes.Length == 0) throw new ArgumentException("Nothing to obfuscate!");
 
+    var encodeMap = CreateEncodeMap(words);
     var base64 = System.Convert.ToBase64String(bytes);
 
     var sb = new StringBuilder(base64.Length * 5);
@@ -159,6 +146,8 @@ byte[] Defuscate(string data)
 {
     if (string.IsNullOrWhiteSpace(data)) throw new ArgumentException("Nothing to defuscate.");
 
+    var decodeMap = CreateDecodeMap(words);
+    
     var lines = data.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
     var sb = new StringBuilder(data.Length);
     foreach (var line in lines)
@@ -182,6 +171,43 @@ byte[] Defuscate(string data)
     
     return System.Convert.FromBase64String(sb.ToString());
 }
+
+
+Dictionary<char, string> CreateEncodeMap(IEnumerable<string> wordsList)
+{
+    var encodeMap = new Dictionary<char, string>();
+    
+    foreach (var word in wordsList)
+    {
+        var split = word.Split(":");
+
+        var c = split[0][0];
+        var w = split[1];
+    
+        encodeMap.Add(c, w);
+    }
+
+    return encodeMap;
+}
+
+
+Dictionary<string, char> CreateDecodeMap(IEnumerable<string> wordsList)
+{
+    var decodeMap = new Dictionary<string, char>();
+
+    foreach (var word in wordsList)
+    {
+        var split = word.Split(":");
+
+        var c = split[0][0];
+        var w = split[1];
+    
+        decodeMap.Add(w, c);
+    }
+
+    return decodeMap;
+}
+
 
 /*
 
