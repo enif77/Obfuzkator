@@ -1,5 +1,7 @@
 ﻿# Obfuzkator
 
+Moved to: https://codeberg.org/enif77/Obfuzkator
+
 A file obfuscation tool.
 
 
